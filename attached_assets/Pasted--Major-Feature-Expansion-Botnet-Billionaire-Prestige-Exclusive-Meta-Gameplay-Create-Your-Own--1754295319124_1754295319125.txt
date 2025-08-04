@@ -1,0 +1,30 @@
+🚀 Major Feature Expansion – Botnet Billionaire
+🧠 Prestige-Exclusive Meta Gameplay
+Create Your Own Malware – During each prestige run, synthesize custom malware combinations by selecting Attack Vector + Payload + Delivery Method to create thousands of unique builds that give specific gameplay bonuses.
+
+Build Digital HQ – Spend special resources to build and upgrade a hideout base (modules like server racks, firewalls, VPN hubs, encryption cores) to permanently boost production and defense capabilities.
+
+🌍 World Domination Layer
+Interactive World Map Takeover – Expand your influence country by country on a real-world map; each location conquered grants different passive perks and hacking advantages.
+
+Faction System – Join hacker factions such as Anonymous, Shadow Syndicate, or Neo-Phreaks. Each faction offers exclusive upgrades, perks, and cosmetic identity themes.
+
+🔬 Research & Adversaries
+Research Tech Tree – A long-term branching technology system where you invest packets into unlocking new botnet types, malware traits, packet compression, stealth tools, and economic bonuses.
+
+Rival Hackers (AI Enemies) – Competing AI hacker groups periodically attack you, attempting to steal packets or interrupt production. Deploy defenses or launch counter-hacks to retaliate.
+
+Mini-Events (RNG Pop-ups) – Random timed events (e.g., “Exposed Government Terminal!”) give the player a chance to click for huge bursts of packets, unique exploits, or temporary buffs.
+
+Offline Earnings – Continue farming packets while the player is offline. On login show a terminal popup: “While you were gone, your botnet harvested X packets.”
+
+💣 NEW: Cyber Raid System
+Hack major global corporations (e.g., “MegaBank”, “DataForge”, “TelTech Industries”) during Cyber Raids to steal massive packets and rare upgrade items.
+
+Each raid launches a short hacker-style puzzle or minigame (e.g., circuit tracing, password cracking, packet-routing, intercept timing challenges).
+
+Every corporation has a cooldown timer before you can raid them again.
+
+As you raid them repeatedly, they upgrade their cybersecurity, making puzzles progressively harder and introducing new mechanics and countermeasures.
+
+Successful raids can also weaken rival factions and unlock world-event scale upgrades.

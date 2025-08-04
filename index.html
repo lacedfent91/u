@@ -1,0 +1,2463 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Botnet Billionaire - Cyber Empire</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #0a0a0a, #1a1a2e, #16213e);
+            color: #00ff00;
+            overflow-x: hidden;
+            user-select: none;
+        }
+
+        .game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            gap: 20px;
+            min-height: 100vh;
+        }
+
+        .hack-button {
+            background: linear-gradient(45deg, #ff0040, #ff6b35, #f7931e);
+            border: 3px solid #00ff00;
+            border-radius: 20px;
+            color: #ffffff;
+            font-size: 24px;
+            font-weight: bold;
+            padding: 20px 40px;
+            cursor: pointer;
+            text-shadow: 0 0 10px #ff0040;
+            box-shadow: 0 0 30px rgba(255, 0, 64, 0.5);
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hack-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 50px rgba(255, 0, 64, 0.8);
+        }
+
+        .hack-button:active {
+            transform: scale(0.95);
+        }
+
+        .hack-button::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: rotate(45deg);
+            animation: shine 2s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+            width: 100%;
+            max-width: 1400px;
+        }
+
+        .panel {
+            background: rgba(0, 30, 60, 0.8);
+            border: 2px solid #00cccc;
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0 0 20px rgba(0, 204, 204, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .panel h3 {
+            color: #00ffff;
+            text-align: center;
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px #00ffff;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .stat-item {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #004444;
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #00ff00;
+            text-shadow: 0 0 5px #00ff00;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #00cccc;
+            margin-top: 5px;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #004400, #006600);
+            border: 2px solid #00ff00;
+            border-radius: 8px;
+            color: #ffffff;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 12px;
+            transition: all 0.2s ease;
+            margin: 2px;
+            text-shadow: 0 0 5px #00ff00;
+        }
+
+        .btn:hover {
+            background: linear-gradient(45deg, #006600, #008800);
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            background: #333;
+            border-color: #666;
+            color: #666;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .store-btn, .customize-btn {
+            background: linear-gradient(45deg, #440044, #660066);
+            border-color: #ff00ff;
+            color: #ffffff;
+            text-shadow: 0 0 5px #ff00ff;
+        }
+
+        .store-btn:hover, .customize-btn:hover {
+            background: linear-gradient(45deg, #660066, #880088);
+            box-shadow: 0 0 15px rgba(255, 0, 255, 0.5);
+        }
+
+        .prestige-btn {
+            background: linear-gradient(45deg, #444400, #666600);
+            border-color: #ffff00;
+            color: #ffffff;
+            text-shadow: 0 0 5px #ffff00;
+        }
+
+        .prestige-btn:hover {
+            background: linear-gradient(45deg, #666600, #888800);
+            box-shadow: 0 0 15px rgba(255, 255, 0, 0.5);
+        }
+
+        .progress-bar {
+            background: #333;
+            border: 1px solid #666;
+            border-radius: 10px;
+            height: 20px;
+            overflow: hidden;
+            margin: 5px 0;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #00ff00, #00cccc);
+            height: 100%;
+            transition: width 0.3s ease;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+        }
+
+        .slider-menu {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100vh;
+            background: rgba(10, 10, 30, 0.95);
+            border-left: 3px solid #00cccc;
+            backdrop-filter: blur(15px);
+            transition: right 0.3s ease;
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .slider-menu.open {
+            right: 0;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: #ff0000;
+            border: none;
+            color: white;
+            font-size: 24px;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .upgrade-item {
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid #00ff00;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+            transition: all 0.2s ease;
+        }
+
+        .upgrade-item:hover {
+            border-color: #00ffff;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+        }
+
+        .upgrade-item h4 {
+            color: #00ffff;
+            margin-bottom: 8px;
+            text-shadow: 0 0 5px #00ffff;
+        }
+
+        .upgrade-item .cost {
+            color: #ffff00;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .upgrade-item .effect {
+            color: #00cccc;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+
+        .world-map {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .country {
+            background: #333;
+            border: 2px solid #666;
+            border-radius: 8px;
+            padding: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-height: 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .country.controlled {
+            background: #004400;
+            border-color: #00ff00;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+        }
+
+        .country.attacking {
+            background: #440000;
+            border-color: #ff0000;
+            animation: pulse 1s infinite;
+        }
+
+        .country:hover {
+            background: #555;
+            transform: scale(1.05);
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 255, 0, 0.9);
+            color: #000;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-weight: bold;
+            z-index: 1001;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            max-width: 300px;
+            word-wrap: break-word;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .floating-text {
+            position: fixed;
+            color: #00ff00;
+            font-weight: bold;
+            font-size: 20px;
+            pointer-events: none;
+            z-index: 100;
+            text-shadow: 0 0 10px #00ff00;
+            animation: floatUp 2s ease-out forwards;
+        }
+
+        @keyframes floatUp {
+            0% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-100px);
+            }
+        }
+
+        .particles {
+            position: fixed;
+            pointer-events: none;
+            z-index: 50;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #00ff00;
+            border-radius: 50%;
+            animation: particle 1s ease-out forwards;
+        }
+
+        @keyframes particle {
+            0% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(0) translateY(-50px);
+            }
+        }
+
+        .minigame-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 5px;
+            margin: 10px 0;
+        }
+
+        .minigame-cell {
+            aspect-ratio: 1;
+            background: #333;
+            border: 1px solid #666;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .minigame-cell:hover {
+            background: #555;
+        }
+
+        .minigame-cell.revealed {
+            background: #004400;
+            border-color: #00ff00;
+        }
+
+        .minigame-cell.virus {
+            background: #440000;
+            border-color: #ff0000;
+            color: #ff0000;
+        }
+
+        .settings-achievements {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 100;
+        }
+
+        .modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(10, 10, 30, 0.95);
+            border: 3px solid #00cccc;
+            border-radius: 15px;
+            padding: 30px;
+            z-index: 1001;
+            max-width: 90vw;
+            max-height: 90vh;
+            overflow-y: auto;
+            backdrop-filter: blur(15px);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal.open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .faction-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .faction-card {
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid #666;
+            border-radius: 10px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .faction-card:hover {
+            border-color: #00ffff;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+        }
+
+        .faction-card.selected {
+            border-color: #00ff00;
+            background: rgba(0, 68, 0, 0.7);
+        }
+
+        .hq-module {
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid #00ff00;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+            transition: all 0.3s ease;
+        }
+
+        .hq-module.built {
+            border-color: #00ffff;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+        }
+
+        .raid-target {
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid #ff6600;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .raid-target:hover {
+            border-color: #ff0000;
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
+        }
+
+        /* Mobile responsive fixes */
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .slider-menu {
+                width: 100vw;
+                right: -100vw;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .world-map {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .faction-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hack-button {
+                font-size: 18px;
+                padding: 15px 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Music -->
+    <audio id="bgMusic" loop>
+        <source src="data:audio/wav;base64,UklGRiQEAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAEAAA=" type="audio/wav">
+    </audio>
+
+    <!-- Sound Effects -->
+    <audio id="clickSound">
+        <source src="data:audio/wav;base64,UklGRiQEAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAEAAA=" type="audio/wav">
+    </audio>
+    <audio id="successSound">
+        <source src="data:audio/wav;base64,UklGRiQEAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAEAAA=" type="audio/wav">
+    </audio>
+
+    <div class="overlay" id="overlay" onclick="closeAllMenus()"></div>
+
+    <div class="game-container">
+        <!-- Main Hack Button -->
+        <button class="hack-button" onclick="hackClick()">
+            HACK THE MAINFRAME
+        </button>
+
+        <!-- Action Buttons -->
+        <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+            <button class="customize-btn" onclick="toggleMenu('customizeMenu')">
+                🎨 Customize 🎨
+            </button>
+            <button class="store-btn btn" onclick="toggleMenu('storeMenu')">
+                🛒 Cyber Store 🛒
+            </button>
+            <button class="btn" onclick="toggleMenu('inventoryMenu')">
+                🎒 Inventory 🎒
+            </button>
+            <button class="debug-btn btn" onclick="toggleMenu('debugMenu')" id="debugButton">
+                🐛 Debug Tools 🐛
+            </button>
+        </div>
+
+        <div class="main-content">
+            <div class="left-column">
+                <!-- System Status -->
+                <div class="panel">
+                    <h3>📊 System Status 📊</h3>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-value" id="packetsDisplay">0</div>
+                            <div class="stat-label">Net Packets</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="ppsDisplay">0.0</div>
+                            <div class="stat-label">Packets/sec</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="totalClicksDisplay">0</div>
+                            <div class="stat-label">Total Clicks</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="clickPowerDisplay">1</div>
+                            <div class="stat-label">Click Power</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hacker Profile -->
+                <div class="panel">
+                    <h3>👤 Hacker Profile 👤</h3>
+                    <div><strong>Username:</strong> <span id="username">Anonymous</span></div>
+                    <div><strong>Rank:</strong> <span id="rank">Script Kiddie</span></div>
+                    <div><strong>Level:</strong> <span id="level">1</span></div>
+                    <div><strong>Faction:</strong> <span id="faction">None</span></div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="levelProgress"></div>
+                    </div>
+                </div>
+
+                <!-- Virtual Pet -->
+                <div class="panel">
+                    <h3>🐾 Cyber Pet 🐾</h3>
+                    <div id="petDisplay">
+                        <div style="font-size: 40px; text-align: center;" id="petEmoji">🤖</div>
+                        <div><strong>Name:</strong> <span id="petName">Binary</span></div>
+                        <div><strong>Happiness:</strong> <span id="petHappiness">100</span>%</div>
+                        <div><strong>Hunger:</strong> <span id="petHunger">0</span>%</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="petHungerBar" style="width: 0%;"></div>
+                        </div>
+                        <button class="btn" onclick="feedPet()">🍎 Feed Pet (Uses Food)</button>
+                        <button class="btn" onclick="playWithPet()">🎾 Play With Pet</button>
+                        <div style="color: #ffff00; font-size: 12px; text-align: center;">
+                            Food in inventory: <span id="foodCount">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Minigames -->
+                <div class="panel">
+                    <h3>🎮 Hacker Minigames 🎮</h3>
+                    <button class="btn minigame-btn" onclick="startMinigame('virusSweeper')" id="virusSweeperBtn">🦠 Virus Sweeper</button>
+                    <button class="btn minigame-btn" onclick="startMinigame('passwordCrack')" id="passwordCrackBtn">🔓 Password Crack</button>
+                    <button class="btn minigame-btn" onclick="startMinigame('networkPuzzle')" id="networkPuzzleBtn">🌐 Network Puzzle</button>
+                    <div id="minigameReward" style="color: #ffff00; text-align: center; padding: 10px;"></div>
+                    <div id="minigameCooldowns" style="color: #ff6600; font-size: 12px; text-align: center;"></div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="panel">
+                    <h3>⚡ Quick Actions ⚡</h3>
+                    <button class="btn" onclick="toggleMenu('upgradesMenu')">⬆️ View Upgrades</button>
+                    <button class="btn prestige-btn" onclick="doPrestige()" id="quickPrestigeButton" disabled>⭐ Prestige Reboot</button>
+                    <button class="btn" onclick="toggleMenu('malwareMenu')">🦠 Create Malware</button>
+                    <button class="btn" onclick="toggleMenu('researchMenu')">🔬 Research Tree</button>
+                </div>
+            </div>
+
+            <div class="middle-column">
+                <!-- Botnet Network -->
+                <div class="panel">
+                    <h3>🕸️ Botnet Network 🕸️</h3>
+                    <button class="btn" onclick="toggleMenu('botnetMenu')">Manage Botnet Nodes</button>
+                    <div id="botnetList">
+                        <!-- Quick access botnet nodes -->
+                    </div>
+                </div>
+
+                <!-- Hacker Leaderboard -->
+                <div class="panel">
+                    <h3>🏆 Hacker Leaderboard 🏆</h3>
+                    <div id="leaderboardList">
+                        <!-- This will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Prestige Shop -->
+                <div class="panel prestige-section" id="prestigePanel" style="display: none;">
+                    <h3>⭐ Prestige Shop ⭐</h3>
+                    <div class="prestige-info">
+                        <div>🔑 Encryption Keys: <span id="prestigePointsShop">0</span></div>
+                        <div>🔄 Next Reboot: <span id="nextPrestigeDisplay">1M packets</span></div>
+                    </div>
+                    <div id="prestigeShopQuick"></div>
+                    <button class="btn prestige-btn" onclick="doPrestige()" id="prestigeButton" disabled>🔄 System Reboot</button>
+                    <button class="btn" onclick="toggleMenu('prestigeMenu')">⭐ Full Prestige Shop</button>
+                </div>
+            </div>
+
+            <div class="right-column">
+                <!-- World Domination -->
+                <div class="panel">
+                    <h3>🌍 World Domination 🌍</h3>
+                    <div style="text-align: center; margin-bottom: 10px;">
+                        Control: <span id="worldControl">0</span>/24 countries
+                    </div>
+                    <button class="btn" onclick="toggleMenu('worldMapMenu')">🗺️ View World Map</button>
+                    <button class="btn" onclick="toggleMenu('factionMenu')">🏴 Join Faction</button>
+                </div>
+
+                <!-- Digital HQ -->
+                <div class="panel">
+                    <h3>🏢 Digital HQ 🏢</h3>
+                    <div style="text-align: center; margin-bottom: 10px;">
+                        HQ Level: <span id="hqLevel">1</span>
+                    </div>
+                    <button class="btn" onclick="toggleMenu('hqMenu')">🏗️ Build HQ Modules</button>
+                    <div id="hqBonuses" style="color: #00cccc; font-size: 12px; text-align: center;"></div>
+                </div>
+
+                <!-- Cyber Raids -->
+                <div class="panel">
+                    <h3>💣 Cyber Raids 💣</h3>
+                    <button class="btn" onclick="toggleMenu('raidMenu')">🎯 Target Corporations</button>
+                    <div id="raidStatus" style="color: #ffff00; font-size: 12px; text-align: center;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings and Achievements -->
+    <div class="settings-achievements">
+        <button class="btn" onclick="toggleMenu('settingsMenu')">⚙️ Settings</button>
+        <button class="btn" onclick="toggleMenu('achievementsMenu')">🏆 Achievements</button>
+    </div>
+
+    <!-- Slider Menus -->
+    <div class="slider-menu" id="customizeMenu">
+        <button class="close-btn" onclick="closeMenu('customizeMenu')">&times;</button>
+        <h3>🎨 Customize Interface</h3>
+        <div style="margin: 20px 0;">
+            <h4>🎵 Audio Settings</h4>
+            <button class="btn" onclick="toggleMusic()">🎵 Toggle Background Music</button>
+            <button class="btn" onclick="toggleSFX()">🔊 Toggle Sound Effects</button>
+        </div>
+        <div style="margin: 20px 0;">
+            <h4>🎨 Visual Themes</h4>
+            <button class="btn" onclick="setTheme('cyber')">💚 Cyber Green</button>
+            <button class="btn" onclick="setTheme('neon')">💙 Neon Blue</button>
+            <button class="btn" onclick="setTheme('retro')">💜 Retro Purple</button>
+            <button class="btn" onclick="setTheme('matrix')">💚 Matrix Theme</button>
+        </div>
+    </div>
+
+    <div class="slider-menu" id="storeMenu">
+        <button class="close-btn" onclick="closeMenu('storeMenu')">&times;</button>
+        <h3>🛒 Cyber Store</h3>
+        <div id="storeItems">
+            <!-- Store items will be dynamically generated -->
+        </div>
+        <div style="margin: 15px 0; text-align: center;">
+            <div>🍎 Food Collected: <span id="foodCollected">0</span></div>
+            <div>👮 Police Evaded: <span id="policeEvaded">0</span></div>
+            <button class="btn" onclick="startStoreRun()">🏃 Start Store Run</button>
+            <button class="btn" onclick="buyFoodFromCollected('basic')">💰 Buy Basic Food (500 each)</button>
+            <button class="btn" onclick="buyFoodFromCollected('premium')">💰 Buy Premium Food (1000 each)</button>
+            <button class="btn" onclick="buyFoodFromCollected('luxury')">💰 Buy Luxury Food (2000 each)</button>
+        </div>
+    </div>
+
+    <div class="slider-menu" id="inventoryMenu">
+        <button class="close-btn" onclick="closeMenu('inventoryMenu')">&times;</button>
+        <h3>🎒 Digital Inventory</h3>
+        <div id="inventoryItems">
+            <!-- Inventory will be dynamically generated -->
+        </div>
+    </div>
+
+    <div class="slider-menu" id="upgradesMenu">
+        <button class="close-btn" onclick="closeMenu('upgradesMenu')">&times;</button>
+        <h3>⬆️ All Upgrades</h3>
+        <div id="allUpgradesList"></div>
+    </div>
+
+    <div class="slider-menu" id="botnetMenu">
+        <button class="close-btn" onclick="closeMenu('botnetMenu')">&times;</button>
+        <h3>🕸️ Botnet Network Management</h3>
+        <div id="allBotnetList"></div>
+    </div>
+
+    <div class="slider-menu" id="prestigeMenu">
+        <button class="close-btn" onclick="closeMenu('prestigeMenu')">&times;</button>
+        <h3>⭐ Prestige Shop</h3>
+        <div id="prestigeShopList"></div>
+    </div>
+
+    <div class="slider-menu" id="raidMenu">
+        <button class="close-btn" onclick="closeMenu('raidMenu')">&times;</button>
+        <h3>💣 Cyber Raids</h3>
+        <div id="raidTargets"></div>
+    </div>
+
+    <div class="slider-menu" id="worldMapMenu">
+        <button class="close-btn" onclick="closeMenu('worldMapMenu')">&times;</button>
+        <h3>🌍 World Map</h3>
+        <div class="world-map" id="worldMap"></div>
+    </div>
+
+    <div class="slider-menu" id="factionMenu">
+        <button class="close-btn" onclick="closeMenu('factionMenu')">&times;</button>
+        <h3>🏴 Choose Your Faction</h3>
+        <div class="faction-grid" id="factionGrid"></div>
+    </div>
+
+    <div class="slider-menu" id="hqMenu">
+        <button class="close-btn" onclick="closeMenu('hqMenu')">&times;</button>
+        <h3>🏢 HQ Modules</h3>
+        <div id="hqModules"></div>
+    </div>
+
+    <div class="slider-menu" id="settingsMenu">
+        <button class="close-btn" onclick="closeMenu('settingsMenu')">&times;</button>
+        <h3>⚙️ Game Settings</h3>
+        <div style="margin: 20px 0;">
+            <button class="btn" onclick="saveGame()">💾 Save Game</button>
+            <button class="btn" onclick="loadGame()">📁 Load Game</button>
+            <button class="btn" onclick="exportSave()">📤 Export Save</button>
+            <button class="btn" onclick="importSave()">📥 Import Save</button>
+            <button class="btn" onclick="resetGame()">🔄 Reset Game</button>
+        </div>
+    </div>
+
+    <div class="slider-menu" id="achievementsMenu">
+        <button class="close-btn" onclick="closeMenu('achievementsMenu')">&times;</button>
+        <h3>🏆 Achievements</h3>
+        <div id="achievementsList"></div>
+    </div>
+
+    <div class="slider-menu" id="debugMenu">
+        <button class="close-btn" onclick="closeMenu('debugMenu')">&times;</button>
+        <h3>🐛 Debug Tools</h3>
+        <div style="margin-bottom: 20px;">
+            <h4>Quick Add Resources:</h4>
+            <button class="btn debug-btn" onclick="debugAddPackets(1000000)">+1M Packets</button>
+            <button class="btn debug-btn" onclick="debugAddPackets(1000000000)">+1B Packets</button>
+            <button class="btn debug-btn" onclick="debugAddPrestige(10)">+10 Prestige Points</button>
+            <button class="btn debug-btn" onclick="debugMaxLevel()">Max Current Level</button>
+        </div>
+        <div style="margin-bottom: 20px;">
+            <h4>Game State:</h4>
+            <button class="btn debug-btn" onclick="debugResetCooldowns()">Reset All Cooldowns</button>
+            <button class="btn debug-btn" onclick="debugLevelUp()">Force Level Up</button>
+            <button class="btn debug-btn" onclick="debugUnlockAll()">Unlock Everything</button>
+            <button class="btn debug-btn" onclick="debugPetHappy()">Max Pet Happiness</button>
+            <button class="btn debug-btn" onclick="debugPetHungry()">Make Pet Hungry</button>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div class="modal" id="raidModal">
+        <button class="close-btn" onclick="closeRaidPuzzle()">&times;</button>
+        <h3>🎯 Cyber Raid in Progress</h3>
+        <div id="raidPuzzle"></div>
+    </div>
+
+    <div class="modal" id="minigameModal">
+        <button class="close-btn" onclick="closeMinigame()">&times;</button>
+        <h3 id="minigameTitle">🎮 Minigame</h3>
+        <div id="minigameContent"></div>
+    </div>
+
+    <script>
+        // Enhanced game state with complete functionality
+        let gameState = {
+            packets: 0,
+            totalClicks: 0,
+            packetsPerSecond: 0,
+            clickPower: 1,
+            prestigeLevel: 0,
+            prestigePoints: 0,
+            sessionStart: Date.now(),
+            username: 'Anonymous',
+            level: 1,
+            experience: 0,
+            lastSave: Date.now(),
+            
+            // Settings
+            settings: {
+                musicEnabled: true,
+                sfxEnabled: true,
+                theme: 'cyber',
+                particlesEnabled: true
+            },
+
+            // Upgrades system with 100+ upgrades
+            upgrades: {},
+            prestigeUpgrades: {},
+            
+            // Botnet network
+            botnetNodes: {
+                compromisedPCs: { count: 0, cost: 10, baseRate: 1, baseCost: 10 },
+                officeServers: { count: 0, cost: 100, baseRate: 5, baseCost: 100 },
+                universityNetworks: { count: 0, cost: 1000, baseRate: 15, baseCost: 1000 },
+                governmentSystems: { count: 0, cost: 10000, baseRate: 50, baseCost: 10000 },
+                bankingNetworks: { count: 0, cost: 100000, baseRate: 200, baseCost: 100000 },
+                militarySatellites: { count: 0, cost: 1000000, baseRate: 1000, baseCost: 1000000 },
+                quantumSupercomputers: { count: 0, cost: 10000000, baseRate: 5000, baseCost: 10000000 },
+                alienTechnology: { count: 0, cost: 100000000, baseRate: 25000, baseCost: 100000000 }
+            },
+
+            // Store and inventory system
+            inventory: {
+                food: 0,
+                tools: 0,
+                rare: 0,
+                malware: 0,
+                exploits: 0
+            },
+            
+            storeGame: {
+                foodCollected: 0,
+                policeEvaded: 0,
+                isActive: false,
+                lastRun: 0
+            },
+
+            // World domination
+            worldControl: {
+                countries: {},
+                totalControlled: 0,
+                attackInProgress: null,
+                lastAttack: 0
+            },
+
+            // Faction system
+            faction: 'none',
+            factionRank: 0,
+            factionRep: 0,
+
+            // HQ system
+            hq: {
+                level: 1,
+                modules: {},
+                totalBuilt: 0
+            },
+
+            // Raid system
+            raids: {
+                targets: {},
+                active: null,
+                lastRaid: 0,
+                successRate: 0.5
+            },
+
+            // Pet system
+            pets: {
+                name: 'Binary',
+                happiness: 100,
+                hunger: 0,
+                lastFed: Date.now(),
+                lastPlayed: Date.now(),
+                lastHungerUpdate: Date.now()
+            },
+
+            // Minigames
+            minigames: {
+                virusSweeper: { lastPlayed: 0, bestScore: 0 },
+                passwordCrack: { lastPlayed: 0, bestScore: 0 },
+                networkPuzzle: { lastPlayed: 0, bestScore: 0 }
+            },
+
+            // Achievements
+            achievements: {},
+            
+            // Leaderboard
+            leaderboard: [],
+
+            // Performance optimization
+            lastFrameTime: Date.now(),
+            frameCount: 0,
+            fps: 60
+        };
+
+        // Complete upgrade definitions (100+ upgrades)
+        const upgradeDefinitions = {
+            // Click Power Upgrades (20 upgrades)
+            clickPower1: { name: 'Better Mouse', cost: 50, effect: 'Click power +1', type: 'clickPower', value: 1 },
+            clickPower2: { name: 'Gaming Mouse', cost: 200, effect: 'Click power +2', type: 'clickPower', value: 2 },
+            clickPower3: { name: 'Mechanical Keyboard', cost: 500, effect: 'Click power +3', type: 'clickPower', value: 3 },
+            clickPower4: { name: 'RGB Setup', cost: 1000, effect: 'Click power +5', type: 'clickPower', value: 5 },
+            clickPower5: { name: 'Dual Monitors', cost: 2500, effect: 'Click power +8', type: 'clickPower', value: 8 },
+            clickPower6: { name: 'Triple Monitor Setup', cost: 5000, effect: 'Click power +12', type: 'clickPower', value: 12 },
+            clickPower7: { name: 'Custom Workstation', cost: 10000, effect: 'Click power +20', type: 'clickPower', value: 20 },
+            clickPower8: { name: 'Server-Grade Hardware', cost: 25000, effect: 'Click power +30', type: 'clickPower', value: 30 },
+            clickPower9: { name: 'Quantum Mouse', cost: 50000, effect: 'Click power +50', type: 'clickPower', value: 50 },
+            clickPower10: { name: 'Neural Interface', cost: 100000, effect: 'Click power +80', type: 'clickPower', value: 80 },
+            clickPower11: { name: 'Cybernetic Implants', cost: 250000, effect: 'Click power +120', type: 'clickPower', value: 120 },
+            clickPower12: { name: 'Brain-Computer Link', cost: 500000, effect: 'Click power +200', type: 'clickPower', value: 200 },
+            clickPower13: { name: 'Quantum Processor', cost: 1000000, effect: 'Click power +300', type: 'clickPower', value: 300 },
+            clickPower14: { name: 'AI Assistant', cost: 2500000, effect: 'Click power +500', type: 'clickPower', value: 500 },
+            clickPower15: { name: 'Consciousness Upload', cost: 5000000, effect: 'Click power +800', type: 'clickPower', value: 800 },
+            clickPower16: { name: 'Digital Transcendence', cost: 10000000, effect: 'Click power +1200', type: 'clickPower', value: 1200 },
+            clickPower17: { name: 'Quantum Entanglement', cost: 25000000, effect: 'Click power +2000', type: 'clickPower', value: 2000 },
+            clickPower18: { name: 'Multiverse Access', cost: 50000000, effect: 'Click power +3000', type: 'clickPower', value: 3000 },
+            clickPower19: { name: 'Reality Hacker', cost: 100000000, effect: 'Click power +5000', type: 'clickPower', value: 5000 },
+            clickPower20: { name: 'Universe Controller', cost: 250000000, effect: 'Click power +8000', type: 'clickPower', value: 8000 },
+
+            // Automation Upgrades (25 upgrades)
+            auto1: { name: 'Basic Script', cost: 100, effect: '+0.5 packets/sec', type: 'automation', value: 0.5 },
+            auto2: { name: 'Improved Script', cost: 250, effect: '+1 packet/sec', type: 'automation', value: 1 },
+            auto3: { name: 'Batch Scripts', cost: 500, effect: '+2 packets/sec', type: 'automation', value: 2 },
+            auto4: { name: 'PowerShell Automation', cost: 1000, effect: '+3.5 packets/sec', type: 'automation', value: 3.5 },
+            auto5: { name: 'Python Bot', cost: 2000, effect: '+5 packets/sec', type: 'automation', value: 5 },
+            auto6: { name: 'JavaScript Injector', cost: 4000, effect: '+8 packets/sec', type: 'automation', value: 8 },
+            auto7: { name: 'PHP Backdoor', cost: 8000, effect: '+12 packets/sec', type: 'automation', value: 12 },
+            auto8: { name: 'SQL Injection Tool', cost: 16000, effect: '+18 packets/sec', type: 'automation', value: 18 },
+            auto9: { name: 'Buffer Overflow Exploit', cost: 32000, effect: '+25 packets/sec', type: 'automation', value: 25 },
+            auto10: { name: 'Zero-Day Exploit', cost: 64000, effect: '+35 packets/sec', type: 'automation', value: 35 },
+            auto11: { name: 'Rootkit Suite', cost: 128000, effect: '+50 packets/sec', type: 'automation', value: 50 },
+            auto12: { name: 'Advanced Persistent Threat', cost: 256000, effect: '+70 packets/sec', type: 'automation', value: 70 },
+            auto13: { name: 'AI-Powered Malware', cost: 512000, effect: '+100 packets/sec', type: 'automation', value: 100 },
+            auto14: { name: 'Quantum Virus', cost: 1024000, effect: '+140 packets/sec', type: 'automation', value: 140 },
+            auto15: { name: 'Self-Replicating Code', cost: 2048000, effect: '+200 packets/sec', type: 'automation', value: 200 },
+            auto16: { name: 'Neural Network Worm', cost: 4096000, effect: '+280 packets/sec', type: 'automation', value: 280 },
+            auto17: { name: 'Quantum Entangled Virus', cost: 8192000, effect: '+400 packets/sec', type: 'automation', value: 400 },
+            auto18: { name: 'Dimensional Breach Tool', cost: 16384000, effect: '+560 packets/sec', type: 'automation', value: 560 },
+            auto19: { name: 'Reality Manipulation Code', cost: 32768000, effect: '+800 packets/sec', type: 'automation', value: 800 },
+            auto20: { name: 'Universe Compiler', cost: 65536000, effect: '+1120 packets/sec', type: 'automation', value: 1120 },
+            auto21: { name: 'Multiverse Network', cost: 131072000, effect: '+1600 packets/sec', type: 'automation', value: 1600 },
+            auto22: { name: 'Infinity Loop Generator', cost: 262144000, effect: '+2240 packets/sec', type: 'automation', value: 2240 },
+            auto23: { name: 'Cosmic Code Injector', cost: 524288000, effect: '+3200 packets/sec', type: 'automation', value: 3200 },
+            auto24: { name: 'Divine Algorithm', cost: 1048576000, effect: '+4480 packets/sec', type: 'automation', value: 4480 },
+            auto25: { name: 'Omnipotent Script', cost: 2097152000, effect: '+6400 packets/sec', type: 'automation', value: 6400 },
+
+            // Efficiency Upgrades (20 upgrades)
+            eff1: { name: 'Code Optimization', cost: 500, effect: '+10% packet generation', type: 'efficiency', value: 0.1 },
+            eff2: { name: 'Better Algorithms', cost: 1500, effect: '+15% packet generation', type: 'efficiency', value: 0.15 },
+            eff3: { name: 'Compiler Optimization', cost: 3000, effect: '+20% packet generation', type: 'efficiency', value: 0.2 },
+            eff4: { name: 'Assembly Language', cost: 6000, effect: '+25% packet generation', type: 'efficiency', value: 0.25 },
+            eff5: { name: 'Machine Code', cost: 12000, effect: '+30% packet generation', type: 'efficiency', value: 0.3 },
+            eff6: { name: 'GPU Acceleration', cost: 24000, effect: '+35% packet generation', type: 'efficiency', value: 0.35 },
+            eff7: { name: 'Parallel Processing', cost: 48000, effect: '+40% packet generation', type: 'efficiency', value: 0.4 },
+            eff8: { name: 'Distributed Computing', cost: 96000, effect: '+45% packet generation', type: 'efficiency', value: 0.45 },
+            eff9: { name: 'Cloud Integration', cost: 192000, effect: '+50% packet generation', type: 'efficiency', value: 0.5 },
+            eff10: { name: 'Edge Computing', cost: 384000, effect: '+55% packet generation', type: 'efficiency', value: 0.55 },
+            eff11: { name: 'Quantum Computing', cost: 768000, effect: '+60% packet generation', type: 'efficiency', value: 0.6 },
+            eff12: { name: 'Quantum Supremacy', cost: 1536000, effect: '+65% packet generation', type: 'efficiency', value: 0.65 },
+            eff13: { name: 'Quantum Entanglement', cost: 3072000, effect: '+70% packet generation', type: 'efficiency', value: 0.7 },
+            eff14: { name: 'Molecular Computing', cost: 6144000, effect: '+75% packet generation', type: 'efficiency', value: 0.75 },
+            eff15: { name: 'DNA Computing', cost: 12288000, effect: '+80% packet generation', type: 'efficiency', value: 0.8 },
+            eff16: { name: 'Neural Computing', cost: 24576000, effect: '+85% packet generation', type: 'efficiency', value: 0.85 },
+            eff17: { name: 'Consciousness Computing', cost: 49152000, effect: '+90% packet generation', type: 'efficiency', value: 0.9 },
+            eff18: { name: 'Reality Computing', cost: 98304000, effect: '+95% packet generation', type: 'efficiency', value: 0.95 },
+            eff19: { name: 'Universal Computing', cost: 196608000, effect: '+100% packet generation', type: 'efficiency', value: 1.0 },
+            eff20: { name: 'Omnipotent Computing', cost: 393216000, effect: '+150% packet generation', type: 'efficiency', value: 1.5 },
+
+            // Special Upgrades (15 upgrades)
+            special1: { name: 'Lucky Code', cost: 1000, effect: '1% chance for 10x packets', type: 'special', value: 'lucky' },
+            special2: { name: 'Critical Strike', cost: 5000, effect: '5% chance for 5x click power', type: 'special', value: 'critical' },
+            special3: { name: 'Packet Magnet', cost: 10000, effect: '+2% packet generation per click', type: 'special', value: 'magnet' },
+            special4: { name: 'Time Dilation', cost: 25000, effect: '10% faster game speed', type: 'special', value: 'time' },
+            special5: { name: 'Quantum Tunnel', cost: 50000, effect: 'Ignore 50% of costs', type: 'special', value: 'tunnel' },
+            special6: { name: 'Reality Glitch', cost: 100000, effect: 'Random beneficial effects', type: 'special', value: 'glitch' },
+            special7: { name: 'Paradox Engine', cost: 250000, effect: 'Generate packets from the past', type: 'special', value: 'paradox' },
+            special8: { name: 'Infinity Stone', cost: 500000, effect: '+100% to all effects', type: 'special', value: 'infinity' },
+            special9: { name: 'Chaos Theory', cost: 1000000, effect: 'Unpredictable power boosts', type: 'special', value: 'chaos' },
+            special10: { name: 'Divine Intervention', cost: 2500000, effect: 'Godlike packet generation', type: 'special', value: 'divine' },
+            special11: { name: 'Universe Hack', cost: 5000000, effect: 'Rewrite the laws of physics', type: 'special', value: 'universe' },
+            special12: { name: 'Multiverse Key', cost: 10000000, effect: 'Access infinite realities', type: 'special', value: 'multiverse' },
+            special13: { name: 'Omega Protocol', cost: 25000000, effect: 'Ultimate power unlocked', type: 'special', value: 'omega' },
+            special14: { name: 'God Mode', cost: 50000000, effect: 'Transcend all limitations', type: 'special', value: 'god' },
+            special15: { name: 'Singularity Core', cost: 100000000, effect: 'Become one with the code', type: 'special', value: 'singularity' },
+
+            // Prestige Upgrades (20 upgrades)
+            prestige1: { name: 'Encryption Key I', cost: 1, effect: '+10% packet generation permanently', type: 'prestige', value: 0.1 },
+            prestige2: { name: 'Encryption Key II', cost: 2, effect: '+15% click power permanently', type: 'prestige', value: 0.15 },
+            prestige3: { name: 'Encryption Key III', cost: 3, effect: '+20% automation permanently', type: 'prestige', value: 0.2 },
+            prestige4: { name: 'Master Key I', cost: 5, effect: '+25% all effects permanently', type: 'prestige', value: 0.25 },
+            prestige5: { name: 'Master Key II', cost: 8, effect: '+30% packet generation permanently', type: 'prestige', value: 0.3 },
+            prestige6: { name: 'Master Key III', cost: 12, effect: '+35% click power permanently', type: 'prestige', value: 0.35 },
+            prestige7: { name: 'Quantum Key I', cost: 18, effect: '+40% automation permanently', type: 'prestige', value: 0.4 },
+            prestige8: { name: 'Quantum Key II', cost: 25, effect: '+50% all effects permanently', type: 'prestige', value: 0.5 },
+            prestige9: { name: 'Quantum Key III', cost: 35, effect: '+60% packet generation permanently', type: 'prestige', value: 0.6 },
+            prestige10: { name: 'Divine Key I', cost: 50, effect: '+75% all effects permanently', type: 'prestige', value: 0.75 },
+            prestige11: { name: 'Divine Key II', cost: 70, effect: '+90% packet generation permanently', type: 'prestige', value: 0.9 },
+            prestige12: { name: 'Divine Key III', cost: 100, effect: '+100% all effects permanently', type: 'prestige', value: 1.0 },
+            prestige13: { name: 'Universal Key I', cost: 150, effect: '+125% packet generation permanently', type: 'prestige', value: 1.25 },
+            prestige14: { name: 'Universal Key II', cost: 200, effect: '+150% all effects permanently', type: 'prestige', value: 1.5 },
+            prestige15: { name: 'Universal Key III', cost: 300, effect: '+175% packet generation permanently', type: 'prestige', value: 1.75 },
+            prestige16: { name: 'Omnipotent Key I', cost: 450, effect: '+200% all effects permanently', type: 'prestige', value: 2.0 },
+            prestige17: { name: 'Omnipotent Key II', cost: 650, effect: '+250% packet generation permanently', type: 'prestige', value: 2.5 },
+            prestige18: { name: 'Omnipotent Key III', cost: 900, effect: '+300% all effects permanently', type: 'prestige', value: 3.0 },
+            prestige19: { name: 'Transcendent Key', cost: 1250, effect: '+400% all effects permanently', type: 'prestige', value: 4.0 },
+            prestige20: { name: 'Infinity Key', cost: 2000, effect: '+500% all effects permanently', type: 'prestige', value: 5.0 }
+        };
+
+        // Countries for world domination
+        const countries = [
+            'USA', 'China', 'Russia', 'Germany', 'Japan', 'UK',
+            'France', 'India', 'Brazil', 'Canada', 'Australia', 'South Korea',
+            'Italy', 'Spain', 'Mexico', 'Netherlands', 'Switzerland', 'Sweden',
+            'Norway', 'Finland', 'Denmark', 'Belgium', 'Austria', 'Singapore'
+        ];
+
+        // Factions
+        const factions = {
+            anonymous: { name: 'Anonymous', bonus: 'Click Power +20%', color: '#00ff00' },
+            darkweb: { name: 'Dark Web Collective', bonus: 'Automation +25%', color: '#8000ff' },
+            cyberpunk: { name: 'Cyberpunk Rebels', bonus: 'Special Effects +30%', color: '#ff0080' },
+            quantum: { name: 'Quantum Hackers', bonus: 'All Effects +15%', color: '#00ffff' }
+        };
+
+        // HQ Modules
+        const hqModules = {
+            server: { name: 'Server Farm', cost: 10000, effect: '+50 packets/sec', built: false },
+            research: { name: 'Research Lab', cost: 25000, effect: '+10% upgrade effectiveness', built: false },
+            security: { name: 'Security Center', cost: 50000, effect: '+20% raid success rate', built: false },
+            quantum: { name: 'Quantum Computer', cost: 100000, effect: '+100% automation', built: false },
+            ai: { name: 'AI Core', cost: 250000, effect: '+50% all effects', built: false },
+            satellite: { name: 'Satellite Array', cost: 500000, effect: '+200 packets/sec', built: false },
+            neural: { name: 'Neural Network', cost: 1000000, effect: '+100% click power', built: false },
+            fusion: { name: 'Fusion Reactor', cost: 2500000, effect: '+500 packets/sec', built: false }
+        };
+
+        // Raid Targets
+        const raidTargets = {
+            megaBank: { name: 'MegaBank Corp', reward: 1000000, difficulty: 0.3, cooldown: 300000 },
+            techGiant: { name: 'Tech Giant Inc', reward: 2500000, difficulty: 0.4, cooldown: 600000 },
+            government: { name: 'Government Database', reward: 5000000, difficulty: 0.5, cooldown: 900000 },
+            military: { name: 'Military Network', reward: 10000000, difficulty: 0.6, cooldown: 1200000 },
+            alien: { name: 'Alien Technology', reward: 25000000, difficulty: 0.8, cooldown: 1800000 }
+        };
+
+        // Store items
+        const storeItems = {
+            food: { name: 'Pet Food', cost: 100, effect: 'Feed your cyber pet' },
+            tools: { name: 'Hacking Tools', cost: 500, effect: 'Improve efficiency' },
+            exploits: { name: 'Zero-Day Exploits', cost: 10000, effect: 'Powerful attacks' },
+            malware: { name: 'Custom Malware', cost: 50000, effect: 'Advanced automation' }
+        };
+
+        // Audio system
+        let audioContext;
+        let musicEnabled = true;
+        let sfxEnabled = true;
+
+        // Performance optimization variables
+        let lastRenderTime = 0;
+        let animationFrameId;
+        const targetFPS = 60;
+        const frameTime = 1000 / targetFPS;
+
+        // Utility functions
+        function formatNumber(num) {
+            if (num < 1000) return Math.floor(num).toString();
+            if (num < 1000000) return (num / 1000).toFixed(2) + 'K';
+            if (num < 1000000000) return (num / 1000000).toFixed(2) + 'M';
+            if (num < 1000000000000) return (num / 1000000000).toFixed(2) + 'B';
+            return (num / 1000000000000).toFixed(2) + 'T';
+        }
+
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => notification.classList.add('show'), 10);
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => document.body.removeChild(notification), 300);
+            }, 3000);
+        }
+
+        function showPacketGain(amount) {
+            const floatingText = document.createElement('div');
+            floatingText.className = 'floating-text';
+            floatingText.textContent = '+' + formatNumber(amount);
+            floatingText.style.left = Math.random() * window.innerWidth + 'px';
+            floatingText.style.top = Math.random() * 100 + 100 + 'px';
+            document.body.appendChild(floatingText);
+
+            setTimeout(() => document.body.removeChild(floatingText), 2000);
+        }
+
+        function createParticles(event) {
+            if (!gameState.settings.particlesEnabled) return;
+
+            for (let i = 0; i < 5; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = (event.clientX + (Math.random() - 0.5) * 20) + 'px';
+                particle.style.top = (event.clientY + (Math.random() - 0.5) * 20) + 'px';
+                document.body.appendChild(particle);
+
+                setTimeout(() => document.body.removeChild(particle), 1000);
+            }
+        }
+
+        function playSound(soundId) {
+            if (!sfxEnabled) return;
+            const sound = document.getElementById(soundId);
+            if (sound) {
+                sound.currentTime = 0;
+                sound.play().catch(e => console.log('Audio play failed:', e));
+            }
+        }
+
+        // Menu system
+        function toggleMenu(menuId) {
+            const menu = document.getElementById(menuId);
+            const overlay = document.getElementById('overlay');
+            
+            if (menu.classList.contains('open')) {
+                closeMenu(menuId);
+            } else {
+                closeAllMenus();
+                menu.classList.add('open');
+                overlay.classList.add('active');
+            }
+        }
+
+        function closeMenu(menuId) {
+            const menu = document.getElementById(menuId);
+            const overlay = document.getElementById('overlay');
+            if (menu) menu.classList.remove('open');
+            overlay.classList.remove('active');
+        }
+
+        function closeAllMenus() {
+            const menus = document.querySelectorAll('.slider-menu');
+            const overlay = document.getElementById('overlay');
+            menus.forEach(menu => menu.classList.remove('open'));
+            overlay.classList.remove('active');
+        }
+
+        // Core game functions
+        function hackClick(event) {
+            let clickValue = gameState.clickPower;
+            
+            // Apply faction bonus
+            if (gameState.faction === 'anonymous') clickValue *= 1.2;
+            if (gameState.faction === 'cyberpunk') clickValue *= 1.1;
+            
+            // Apply upgrade bonuses
+            clickValue *= (1 + getUpgradeBonus('clickPower'));
+            clickValue *= (1 + getPrestigeBonus('clickPower'));
+            
+            // Apply special effects
+            if (Math.random() < 0.05 && gameState.upgrades.special2) {
+                clickValue *= 5; // Critical strike
+                showNotification('💥 Critical Strike! 5x damage!');
+            }
+            
+            gameState.packets += clickValue;
+            gameState.totalClicks++;
+            gameState.experience += clickValue;
+
+            playSound('clickSound');
+            showPacketGain(clickValue);
+            
+            if (event && gameState.settings.particlesEnabled) {
+                createParticles(event);
+            }
+
+            checkLevelUp();
+            checkAchievements();
+            updateDisplay();
+        }
+
+        function calculatePacketsPerSecond() {
+            let pps = 0;
+            
+            // Botnet nodes
+            Object.keys(gameState.botnetNodes).forEach(nodeType => {
+                const node = gameState.botnetNodes[nodeType];
+                pps += node.count * node.baseRate;
+            });
+            
+            // Automation upgrades
+            pps += getUpgradeBonus('automation');
+            
+            // Apply faction bonuses
+            if (gameState.faction === 'darkweb') pps *= 1.25;
+            if (gameState.faction === 'quantum') pps *= 1.15;
+            
+            // Apply upgrade bonuses
+            pps *= (1 + getUpgradeBonus('efficiency'));
+            pps *= (1 + getPrestigeBonus('automation'));
+            
+            // HQ module bonuses
+            if (gameState.hq.modules.server) pps += 50;
+            if (gameState.hq.modules.satellite) pps += 200;
+            if (gameState.hq.modules.fusion) pps += 500;
+            if (gameState.hq.modules.quantum) pps *= 2;
+            if (gameState.hq.modules.ai) pps *= 1.5;
+            
+            return pps;
+        }
+
+        function getUpgradeBonus(type) {
+            let bonus = 0;
+            Object.keys(gameState.upgrades).forEach(upgradeId => {
+                if (gameState.upgrades[upgradeId] && upgradeDefinitions[upgradeId]) {
+                    const upgrade = upgradeDefinitions[upgradeId];
+                    if (upgrade.type === type) {
+                        bonus += upgrade.value;
+                    }
+                }
+            });
+            return bonus;
+        }
+
+        function getPrestigeBonus(type) {
+            let bonus = 0;
+            Object.keys(gameState.prestigeUpgrades).forEach(upgradeId => {
+                if (gameState.prestigeUpgrades[upgradeId] && upgradeDefinitions[upgradeId]) {
+                    const upgrade = upgradeDefinitions[upgradeId];
+                    if (upgrade.type === 'prestige' && (type === 'all' || upgradeId.includes(type))) {
+                        bonus += upgrade.value;
+                    }
+                }
+            });
+            return bonus;
+        }
+
+        function checkLevelUp() {
+            const requiredExp = gameState.level * 1000;
+            if (gameState.experience >= requiredExp) {
+                gameState.level++;
+                gameState.experience = 0;
+                showNotification(`🎉 Level Up! Now level ${gameState.level}!`);
+                playSound('successSound');
+                
+                // Level up rewards
+                gameState.clickPower += 1;
+                gameState.packets += gameState.level * 1000;
+            }
+        }
+
+        function checkAchievements() {
+            // Add achievement checking logic here
+            // This would check various conditions and unlock achievements
+        }
+
+        // Upgrade system
+        function buyUpgrade(upgradeId) {
+            const upgrade = upgradeDefinitions[upgradeId];
+            if (!upgrade || gameState.upgrades[upgradeId]) return;
+            
+            if (gameState.packets >= upgrade.cost) {
+                gameState.packets -= upgrade.cost;
+                gameState.upgrades[upgradeId] = true;
+                
+                // Apply upgrade effects
+                if (upgrade.type === 'clickPower') {
+                    gameState.clickPower += upgrade.value;
+                }
+                
+                showNotification(`✅ Purchased: ${upgrade.name}`);
+                playSound('successSound');
+                updateDisplay();
+                generateAllUpgrades();
+            } else {
+                showNotification('❌ Not enough packets!');
+            }
+        }
+
+        function buyPrestigeUpgrade(upgradeId) {
+            const upgrade = upgradeDefinitions[upgradeId];
+            if (!upgrade || gameState.prestigeUpgrades[upgradeId]) return;
+            
+            if (gameState.prestigePoints >= upgrade.cost) {
+                gameState.prestigePoints -= upgrade.cost;
+                gameState.prestigeUpgrades[upgradeId] = true;
+                
+                showNotification(`⭐ Purchased: ${upgrade.name}`);
+                playSound('successSound');
+                updateDisplay();
+                generatePrestigeShop();
+            } else {
+                showNotification('❌ Not enough prestige points!');
+            }
+        }
+
+        // Botnet system
+        function buyBotnetNode(nodeType) {
+            const node = gameState.botnetNodes[nodeType];
+            if (gameState.packets >= node.cost) {
+                gameState.packets -= node.cost;
+                node.count++;
+                node.cost = Math.floor(node.baseCost * Math.pow(1.15, node.count));
+                
+                showNotification(`🕸️ Added ${nodeType} node!`);
+                playSound('successSound');
+                updateDisplay();
+                updateBotnetDisplay();
+            } else {
+                showNotification('❌ Not enough packets!');
+            }
+        }
+
+        // World domination system
+        function attackCountry(countryName) {
+            if (gameState.worldControl.attackInProgress) return;
+            if (Date.now() - gameState.worldControl.lastAttack < 30000) {
+                showNotification('⏰ Wait 30 seconds between attacks!');
+                return;
+            }
+            
+            gameState.worldControl.attackInProgress = countryName;
+            gameState.worldControl.lastAttack = Date.now();
+            
+            showNotification(`🎯 Attacking ${countryName}...`);
+            
+            setTimeout(() => {
+                const success = Math.random() < 0.6; // 60% success rate
+                if (success) {
+                    gameState.worldControl.countries[countryName] = true;
+                    gameState.worldControl.totalControlled++;
+                    const reward = Math.floor(Math.random() * 100000) + 50000;
+                    gameState.packets += reward;
+                    showNotification(`✅ ${countryName} controlled! +${formatNumber(reward)} packets`);
+                    playSound('successSound');
+                } else {
+                    showNotification(`❌ Attack on ${countryName} failed!`);
+                }
+                gameState.worldControl.attackInProgress = null;
+                generateWorldMap();
+                updateDisplay();
+            }, 3000);
+        }
+
+        // Faction system
+        function joinFaction(factionId) {
+            gameState.faction = factionId;
+            gameState.factionRank = 1;
+            gameState.factionRep = 0;
+            
+            showNotification(`🏴 Joined ${factions[factionId].name}!`);
+            playSound('successSound');
+            updateDisplay();
+            generateFactionMenu();
+        }
+
+        // HQ system
+        function buildHQModule(moduleId) {
+            const module = hqModules[moduleId];
+            if (gameState.hq.modules[moduleId]) return;
+            
+            if (gameState.packets >= module.cost) {
+                gameState.packets -= module.cost;
+                gameState.hq.modules[moduleId] = true;
+                gameState.hq.totalBuilt++;
+                
+                if (gameState.hq.totalBuilt % 3 === 0) {
+                    gameState.hq.level++;
+                }
+                
+                showNotification(`🏗️ Built ${module.name}!`);
+                playSound('successSound');
+                updateDisplay();
+                generateHQModules();
+            } else {
+                showNotification('❌ Not enough packets!');
+            }
+        }
+
+        // Raid system
+        function startRaid(targetId) {
+            const target = raidTargets[targetId];
+            if (!target) return;
+            
+            if (gameState.raids.targets[targetId] && Date.now() - gameState.raids.targets[targetId].lastRaid < target.cooldown) {
+                const remainingTime = Math.ceil((target.cooldown - (Date.now() - gameState.raids.targets[targetId].lastRaid)) / 1000);
+                showNotification(`⏰ Cooldown: ${remainingTime}s remaining`);
+                return;
+            }
+            
+            showRaidPuzzle(targetId);
+        }
+
+        function showRaidPuzzle(targetId) {
+            const modal = document.getElementById('raidModal');
+            const puzzleDiv = document.getElementById('raidPuzzle');
+            
+            puzzleDiv.innerHTML = `
+                <h4>🎯 Hacking ${raidTargets[targetId].name}</h4>
+                <p>Click the correct sequence to break their encryption!</p>
+                <div class="minigame-grid" id="raidGrid"></div>
+                <button class="btn" onclick="completeRaid('${targetId}')">💥 Execute Attack</button>
+            `;
+            
+            // Generate puzzle grid
+            const grid = document.getElementById('raidGrid');
+            for (let i = 0; i < 16; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'minigame-cell';
+                cell.textContent = Math.floor(Math.random() * 10);
+                cell.onclick = () => cell.classList.toggle('revealed');
+                grid.appendChild(cell);
+            }
+            
+            modal.classList.add('open');
+            document.getElementById('overlay').classList.add('active');
+        }
+
+        function completeRaid(targetId) {
+            const target = raidTargets[targetId];
+            const successRate = 0.5 + (gameState.hq.modules.security ? 0.2 : 0);
+            
+            if (!gameState.raids.targets[targetId]) {
+                gameState.raids.targets[targetId] = {};
+            }
+            
+            if (Math.random() < successRate) {
+                const reward = target.reward * (1 + getPrestigeBonus('all'));
+                gameState.packets += reward;
+                showNotification(`💰 Raid successful! +${formatNumber(reward)} packets!`);
+                playSound('successSound');
+            } else {
+                showNotification(`💥 Raid failed! ${target.name} detected the intrusion!`);
+            }
+            
+            gameState.raids.targets[targetId].lastRaid = Date.now();
+            closeRaidPuzzle();
+            generateRaidTargets();
+            updateDisplay();
+        }
+
+        function closeRaidPuzzle() {
+            document.getElementById('raidModal').classList.remove('open');
+            document.getElementById('overlay').classList.remove('active');
+        }
+
+        // Prestige system
+        function canPrestige() {
+            return gameState.packets >= 1000000; // 1M packets minimum
+        }
+
+        function calculatePrestigeGain() {
+            if (!canPrestige()) return 0;
+            return Math.floor(Math.sqrt(gameState.packets / 1000000));
+        }
+
+        function doPrestige() {
+            if (!canPrestige()) {
+                showNotification('❌ Need at least 1M packets to prestige!');
+                return;
+            }
+            
+            const gain = calculatePrestigeGain();
+            
+            // Reset most progress
+            gameState.packets = 0;
+            gameState.clickPower = 1;
+            gameState.level = 1;
+            gameState.experience = 0;
+            gameState.upgrades = {};
+            gameState.botnetNodes = {
+                compromisedPCs: { count: 0, cost: 10, baseRate: 1, baseCost: 10 },
+                officeServers: { count: 0, cost: 100, baseRate: 5, baseCost: 100 },
+                universityNetworks: { count: 0, cost: 1000, baseRate: 15, baseCost: 1000 },
+                governmentSystems: { count: 0, cost: 10000, baseRate: 50, baseCost: 10000 },
+                bankingNetworks: { count: 0, cost: 100000, baseRate: 200, baseCost: 100000 },
+                militarySatellites: { count: 0, cost: 1000000, baseRate: 1000, baseCost: 1000000 },
+                quantumSupercomputers: { count: 0, cost: 10000000, baseRate: 5000, baseCost: 10000000 },
+                alienTechnology: { count: 0, cost: 100000000, baseRate: 25000, baseCost: 100000000 }
+            };
+            
+            // Keep prestige progress
+            gameState.prestigeLevel++;
+            gameState.prestigePoints += gain;
+            
+            showNotification(`⭐ Prestige! +${gain} Encryption Keys! Level ${gameState.prestigeLevel}`);
+            playSound('successSound');
+            
+            updateDisplay();
+            generateAllUpgrades();
+            generatePrestigeShop();
+            document.getElementById('prestigePanel').style.display = 'block';
+        }
+
+        // Store system
+        function buyStoreItem(itemId) {
+            const item = storeItems[itemId];
+            if (gameState.packets >= item.cost) {
+                gameState.packets -= item.cost;
+                gameState.inventory[itemId] = (gameState.inventory[itemId] || 0) + 1;
+                
+                showNotification(`🛒 Bought ${item.name}!`);
+                playSound('successSound');
+                updateDisplay();
+                updateInventoryDisplay();
+            } else {
+                showNotification('❌ Not enough packets!');
+            }
+        }
+
+        function startStoreRun() {
+            if (gameState.storeGame.isActive) return;
+            if (Date.now() - gameState.storeGame.lastRun < 60000) {
+                showNotification('⏰ Wait 1 minute between store runs!');
+                return;
+            }
+            
+            gameState.storeGame.isActive = true;
+            gameState.storeGame.lastRun = Date.now();
+            gameState.storeGame.foodCollected = Math.floor(Math.random() * 10) + 5;
+            gameState.storeGame.policeEvaded = Math.floor(Math.random() * 3) + 1;
+            
+            showNotification('🏃 Store run started! Click to collect resources!');
+            updateDisplay();
+            
+            setTimeout(() => {
+                gameState.storeGame.isActive = false;
+                showNotification(`🛒 Store run complete! Collected ${gameState.storeGame.foodCollected} food!`);
+            }, 10000);
+        }
+
+        function buyFoodFromCollected(type) {
+            const prices = { basic: 500, premium: 1000, luxury: 2000 };
+            const multipliers = { basic: 1, premium: 2, luxury: 3 };
+            const cost = gameState.storeGame.foodCollected * prices[type];
+            
+            if (gameState.packets >= cost && gameState.storeGame.foodCollected > 0) {
+                gameState.packets -= cost;
+                const foodAmount = gameState.storeGame.foodCollected * multipliers[type];
+                gameState.inventory.food += foodAmount;
+                gameState.storeGame.foodCollected = 0;
+                
+                showNotification(`🍎 Bought ${foodAmount} ${type} food!`);
+                playSound('successSound');
+                updateDisplay();
+            } else {
+                showNotification('❌ Not enough packets or food!');
+            }
+        }
+
+        // Pet system
+        function feedPet() {
+            if (gameState.inventory.food > 0) {
+                gameState.inventory.food--;
+                gameState.pets.hunger = Math.max(0, gameState.pets.hunger - 25);
+                gameState.pets.happiness = Math.min(100, gameState.pets.happiness + 15);
+                gameState.pets.lastFed = Date.now();
+                
+                showNotification('🍎 Fed pet! Happiness increased!');
+                playSound('successSound');
+                updateDisplay();
+            } else {
+                showNotification('❌ No food in inventory! Buy some from the store.');
+            }
+        }
+
+        function playWithPet() {
+            if (gameState.pets.happiness > 20 && gameState.pets.hunger < 80) {
+                gameState.pets.happiness = Math.max(0, gameState.pets.happiness - 5);
+                gameState.pets.hunger = Math.min(100, gameState.pets.hunger + 5);
+                gameState.pets.lastPlayed = Date.now();
+                
+                const reward = Math.floor(Math.random() * 10000) + 5000;
+                gameState.packets += reward;
+                
+                showNotification(`🎾 Played with pet! +${formatNumber(reward)} packets!`);
+                playSound('successSound');
+                updateDisplay();
+            } else if (gameState.pets.hunger >= 80) {
+                showNotification('😢 Pet is too hungry to play!');
+            } else {
+                showNotification('😢 Pet is too tired to play!');
+            }
+        }
+
+        function updatePetStatus() {
+            const now = Date.now();
+            const timeSinceLastUpdate = now - gameState.pets.lastHungerUpdate;
+            const hungerIncrease = Math.floor(timeSinceLastUpdate / 300000); // 1 hunger per 5 minutes
+            
+            if (hungerIncrease > 0) {
+                gameState.pets.hunger = Math.min(100, gameState.pets.hunger + hungerIncrease);
+                gameState.pets.happiness = Math.max(0, gameState.pets.happiness - hungerIncrease);
+                gameState.pets.lastHungerUpdate = now;
+            }
+        }
+
+        // Minigame system
+        function startMinigame(gameType) {
+            if (Date.now() - gameState.minigames[gameType].lastPlayed < 300000) {
+                const remaining = Math.ceil((300000 - (Date.now() - gameState.minigames[gameType].lastPlayed)) / 1000);
+                showNotification(`⏰ Cooldown: ${remaining}s remaining`);
+                return;
+            }
+            
+            const modal = document.getElementById('minigameModal');
+            const title = document.getElementById('minigameTitle');
+            const content = document.getElementById('minigameContent');
+            
+            switch (gameType) {
+                case 'virusSweeper':
+                    title.textContent = '🦠 Virus Sweeper';
+                    content.innerHTML = generateVirusSweeperGame();
+                    break;
+                case 'passwordCrack':
+                    title.textContent = '🔓 Password Crack';
+                    content.innerHTML = generatePasswordCrackGame();
+                    break;
+                case 'networkPuzzle':
+                    title.textContent = '🌐 Network Puzzle';
+                    content.innerHTML = generateNetworkPuzzleGame();
+                    break;
+            }
+            
+            modal.classList.add('open');
+            document.getElementById('overlay').classList.add('active');
+        }
+
+        function generateVirusSweeperGame() {
+            let html = '<div class="minigame-grid" id="virusGrid">';
+            for (let i = 0; i < 16; i++) {
+                const isVirus = Math.random() < 0.2;
+                html += `<div class="minigame-cell" onclick="revealCell(this, ${isVirus})">${isVirus ? '🦠' : '✅'}</div>`;
+            }
+            html += '</div><button class="btn" onclick="completeMinigame(\'virusSweeper\')">Complete</button>';
+            return html;
+        }
+
+        function generatePasswordCrackGame() {
+            const passwords = ['password123', 'admin', 'qwerty', '123456', 'letmein'];
+            const target = passwords[Math.floor(Math.random() * passwords.length)];
+            return `
+                <p>Crack the password: ${target.replace(/./g, '*')}</p>
+                <input type="text" id="passwordInput" placeholder="Enter password">
+                <button class="btn" onclick="checkPassword('${target}')">Crack</button>
+            `;
+        }
+
+        function generateNetworkPuzzleGame() {
+            return `
+                <p>Connect all nodes by clicking them in the correct order!</p>
+                <div class="minigame-grid" id="networkGrid">
+                    ${Array(16).fill().map((_, i) => `<div class="minigame-cell" onclick="connectNode(this, ${i})">${i + 1}</div>`).join('')}
+                </div>
+                <button class="btn" onclick="completeMinigame('networkPuzzle')">Complete</button>
+            `;
+        }
+
+        function revealCell(cell, isVirus) {
+            cell.classList.add('revealed');
+            if (isVirus) {
+                cell.classList.add('virus');
+            }
+        }
+
+        function checkPassword(target) {
+            const input = document.getElementById('passwordInput').value;
+            if (input === target) {
+                completeMinigame('passwordCrack');
+            } else {
+                showNotification('❌ Wrong password!');
+            }
+        }
+
+        function connectNode(cell, index) {
+            cell.classList.add('revealed');
+        }
+
+        function completeMinigame(gameType) {
+            const reward = Math.floor(Math.random() * 50000) + 25000;
+            gameState.packets += reward;
+            gameState.minigames[gameType].lastPlayed = Date.now();
+            
+            showNotification(`🎮 Minigame complete! +${formatNumber(reward)} packets!`);
+            playSound('successSound');
+            closeMinigame();
+            updateDisplay();
+        }
+
+        function closeMinigame() {
+            document.getElementById('minigameModal').classList.remove('open');
+            document.getElementById('overlay').classList.remove('active');
+        }
+
+        // Audio system
+        function initAudio() {
+            try {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                generateBackgroundMusic();
+            } catch (e) {
+                console.log('Audio not supported');
+            }
+        }
+
+        function generateBackgroundMusic() {
+            // Generate a simple cyberpunk-style background track
+            if (!audioContext || !musicEnabled) return;
+            
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.setValueAtTime(110, audioContext.currentTime);
+            gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+            
+            oscillator.start();
+            
+            setTimeout(() => {
+                oscillator.stop();
+                if (musicEnabled) generateBackgroundMusic();
+            }, 4000);
+        }
+
+        function toggleMusic() {
+            musicEnabled = !musicEnabled;
+            gameState.settings.musicEnabled = musicEnabled;
+            showNotification(musicEnabled ? '🎵 Music enabled' : '🔇 Music disabled');
+            if (musicEnabled) generateBackgroundMusic();
+        }
+
+        function toggleSFX() {
+            sfxEnabled = !sfxEnabled;
+            gameState.settings.sfxEnabled = sfxEnabled;
+            showNotification(sfxEnabled ? '🔊 SFX enabled' : '🔇 SFX disabled');
+        }
+
+        // Theme system
+        function setTheme(themeName) {
+            gameState.settings.theme = themeName;
+            showNotification(`🎨 Theme changed to ${themeName}!`);
+            // Theme changes would be applied here
+        }
+
+        // Display update functions
+        function updateDisplay() {
+            // Update main stats
+            document.getElementById('packetsDisplay').textContent = formatNumber(gameState.packets);
+            document.getElementById('ppsDisplay').textContent = formatNumber(gameState.packetsPerSecond);
+            document.getElementById('totalClicksDisplay').textContent = formatNumber(gameState.totalClicks);
+            document.getElementById('clickPowerDisplay').textContent = formatNumber(gameState.clickPower);
+            
+            // Update profile
+            document.getElementById('username').textContent = gameState.username;
+            document.getElementById('level').textContent = gameState.level;
+            document.getElementById('faction').textContent = gameState.faction === 'none' ? 'None' : factions[gameState.faction].name;
+            
+            // Update level progress
+            const levelProgress = (gameState.experience / (gameState.level * 1000)) * 100;
+            document.getElementById('levelProgress').style.width = levelProgress + '%';
+            
+            // Update rank
+            let rank = 'Script Kiddie';
+            if (gameState.level >= 100) rank = 'Elite Hacker';
+            else if (gameState.level >= 50) rank = 'Professional Hacker';
+            else if (gameState.level >= 25) rank = 'Advanced User';
+            else if (gameState.level >= 10) rank = 'Intermediate Hacker';
+            document.getElementById('rank').textContent = rank;
+            
+            // Update pet
+            document.getElementById('petHappiness').textContent = gameState.pets.happiness;
+            document.getElementById('petHunger').textContent = gameState.pets.hunger;
+            document.getElementById('petHungerBar').style.width = gameState.pets.hunger + '%';
+            document.getElementById('foodCount').textContent = gameState.inventory.food || 0;
+            
+            // Update world control
+            document.getElementById('worldControl').textContent = gameState.worldControl.totalControlled;
+            
+            // Update HQ
+            document.getElementById('hqLevel').textContent = gameState.hq.level;
+            
+            // Update prestige
+            if (gameState.prestigeLevel > 0) {
+                document.getElementById('prestigePanel').style.display = 'block';
+                document.getElementById('prestigePointsShop').textContent = gameState.prestigePoints;
+                document.getElementById('nextPrestigeDisplay').textContent = formatNumber(1000000 - gameState.packets) + ' packets';
+            }
+            
+            // Update prestige buttons
+            const canPrest = canPrestige();
+            document.getElementById('quickPrestigeButton').disabled = !canPrest;
+            const prestigeBtn = document.getElementById('prestigeButton');
+            if (prestigeBtn) prestigeBtn.disabled = !canPrest;
+            
+            // Update store
+            document.getElementById('foodCollected').textContent = gameState.storeGame.foodCollected;
+            document.getElementById('policeEvaded').textContent = gameState.storeGame.policeEvaded;
+            
+            updateInventoryDisplay();
+            updateMinigameCooldowns();
+        }
+
+        function updateBotnetDisplay() {
+            const container = document.getElementById('botnetList');
+            if (!container) return;
+            
+            let html = '';
+            Object.keys(gameState.botnetNodes).forEach(nodeType => {
+                const node = gameState.botnetNodes[nodeType];
+                if (node.count > 0) {
+                    html += `<div style="font-size: 12px; color: #00cccc;">${nodeType}: ${node.count}</div>`;
+                }
+            });
+            container.innerHTML = html || '<div style="font-size: 12px; color: #666;">No active nodes</div>';
+        }
+
+        function updateInventoryDisplay() {
+            const container = document.getElementById('inventoryItems');
+            if (!container) return;
+            
+            let html = '<h4>📦 Current Inventory</h4>';
+            Object.keys(gameState.inventory).forEach(itemType => {
+                const amount = gameState.inventory[itemType];
+                if (amount > 0) {
+                    html += `<div class="upgrade-item">
+                        <h4>${itemType}: ${amount}</h4>
+                        <div class="effect">Various uses available</div>
+                    </div>`;
+                }
+            });
+            
+            if (Object.values(gameState.inventory).every(v => v === 0)) {
+                html += '<div style="color: #666; text-align: center;">Inventory empty</div>';
+            }
+            
+            container.innerHTML = html;
+        }
+
+        function updateMinigameCooldowns() {
+            const container = document.getElementById('minigameCooldowns');
+            if (!container) return;
+            
+            let html = '';
+            Object.keys(gameState.minigames).forEach(gameType => {
+                const game = gameState.minigames[gameType];
+                const cooldown = 300000 - (Date.now() - game.lastPlayed);
+                if (cooldown > 0) {
+                    html += `${gameType}: ${Math.ceil(cooldown / 1000)}s `;
+                }
+            });
+            
+            container.innerHTML = html;
+        }
+
+        // Generation functions for menus
+        function generateAllUpgrades() {
+            const container = document.getElementById('allUpgradesList');
+            if (!container) return;
+            
+            let html = '';
+            Object.keys(upgradeDefinitions).forEach(upgradeId => {
+                const upgrade = upgradeDefinitions[upgradeId];
+                if (upgrade.type !== 'prestige' && !gameState.upgrades[upgradeId]) {
+                    const canAfford = gameState.packets >= upgrade.cost;
+                    html += `
+                        <div class="upgrade-item">
+                            <h4>${upgrade.name}</h4>
+                            <div class="cost">Cost: ${formatNumber(upgrade.cost)} packets</div>
+                            <div class="effect">${upgrade.effect}</div>
+                            <button class="btn ${canAfford ? '' : 'disabled'}" 
+                                    onclick="buyUpgrade('${upgradeId}')" 
+                                    ${canAfford ? '' : 'disabled'}>
+                                Purchase
+                            </button>
+                        </div>
+                    `;
+                }
+            });
+            
+            if (html === '') {
+                html = '<div style="text-align: center; color: #666;">All upgrades purchased!</div>';
+            }
+            
+            container.innerHTML = html;
+        }
+
+        function generateAllBotnetNodes() {
+            const container = document.getElementById('allBotnetList');
+            if (!container) return;
+            
+            let html = '';
+            Object.keys(gameState.botnetNodes).forEach(nodeType => {
+                const node = gameState.botnetNodes[nodeType];
+                const canAfford = gameState.packets >= node.cost;
+                html += `
+                    <div class="upgrade-item">
+                        <h4>${nodeType.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}</h4>
+                        <div class="cost">Cost: ${formatNumber(node.cost)} packets</div>
+                        <div class="effect">+${node.baseRate} packets/sec (owned: ${node.count})</div>
+                        <button class="btn ${canAfford ? '' : 'disabled'}" 
+                                onclick="buyBotnetNode('${nodeType}')" 
+                                ${canAfford ? '' : 'disabled'}>
+                            Buy Node
+                        </button>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        function generatePrestigeShop() {
+            const container = document.getElementById('prestigeShopList');
+            if (!container) return;
+            
+            let html = '';
+            Object.keys(upgradeDefinitions).forEach(upgradeId => {
+                const upgrade = upgradeDefinitions[upgradeId];
+                if (upgrade.type === 'prestige' && !gameState.prestigeUpgrades[upgradeId]) {
+                    const canAfford = gameState.prestigePoints >= upgrade.cost;
+                    html += `
+                        <div class="upgrade-item">
+                            <h4>${upgrade.name}</h4>
+                            <div class="cost">Cost: ${upgrade.cost} Encryption Keys</div>
+                            <div class="effect">${upgrade.effect}</div>
+                            <button class="btn ${canAfford ? '' : 'disabled'}" 
+                                    onclick="buyPrestigeUpgrade('${upgradeId}')" 
+                                    ${canAfford ? '' : 'disabled'}>
+                                Purchase
+                            </button>
+                        </div>
+                    `;
+                }
+            });
+            
+            if (html === '') {
+                html = '<div style="text-align: center; color: #666;">All prestige upgrades purchased!</div>';
+            }
+            
+            container.innerHTML = html;
+        }
+
+        function generateWorldMap() {
+            const container = document.getElementById('worldMap');
+            if (!container) return;
+            
+            let html = '';
+            countries.forEach(country => {
+                const controlled = gameState.worldControl.countries[country];
+                const attacking = gameState.worldControl.attackInProgress === country;
+                html += `
+                    <div class="country ${controlled ? 'controlled' : ''} ${attacking ? 'attacking' : ''}" 
+                         onclick="attackCountry('${country}')">
+                        <div style="font-size: 10px; font-weight: bold;">${country}</div>
+                        <div style="font-size: 8px;">${controlled ? '✅ Controlled' : '❌ Free'}</div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        function generateFactionMenu() {
+            const container = document.getElementById('factionGrid');
+            if (!container) return;
+            
+            let html = '';
+            Object.keys(factions).forEach(factionId => {
+                const faction = factions[factionId];
+                const selected = gameState.faction === factionId;
+                html += `
+                    <div class="faction-card ${selected ? 'selected' : ''}" 
+                         onclick="joinFaction('${factionId}')">
+                        <h4 style="color: ${faction.color};">${faction.name}</h4>
+                        <div class="effect">${faction.bonus}</div>
+                        ${selected ? '<div style="color: #00ff00; margin-top: 10px;">✅ Current Faction</div>' : ''}
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        function generateHQModules() {
+            const container = document.getElementById('hqModules');
+            if (!container) return;
+            
+            let html = '';
+            Object.keys(hqModules).forEach(moduleId => {
+                const module = hqModules[moduleId];
+                const built = gameState.hq.modules[moduleId];
+                const canAfford = gameState.packets >= module.cost;
+                html += `
+                    <div class="hq-module ${built ? 'built' : ''}">
+                        <h4>${module.name}</h4>
+                        <div class="cost">Cost: ${formatNumber(module.cost)} packets</div>
+                        <div class="effect">${module.effect}</div>
+                        ${built ? 
+                            '<div style="color: #00ff00; margin-top: 10px;">✅ Built</div>' :
+                            `<button class="btn ${canAfford ? '' : 'disabled'}" 
+                                     onclick="buildHQModule('${moduleId}')" 
+                                     ${canAfford ? '' : 'disabled'}>
+                                Build Module
+                             </button>`
+                        }
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        function generateRaidTargets() {
+            const container = document.getElementById('raidTargets');
+            if (!container) return;
+            
+            let html = '';
+            Object.keys(raidTargets).forEach(targetId => {
+                const target = raidTargets[targetId];
+                const lastRaid = gameState.raids.targets[targetId]?.lastRaid || 0;
+                const cooldownRemaining = target.cooldown - (Date.now() - lastRaid);
+                const canRaid = cooldownRemaining <= 0;
+                
+                html += `
+                    <div class="raid-target">
+                        <h4>${target.name}</h4>
+                        <div class="cost">Reward: ${formatNumber(target.reward)} packets</div>
+                        <div class="effect">Difficulty: ${Math.floor(target.difficulty * 100)}%</div>
+                        ${canRaid ? 
+                            `<button class="btn" onclick="startRaid('${targetId}')">🎯 Begin Raid</button>` :
+                            `<div style="color: #ff6600;">⏰ Cooldown: ${Math.ceil(cooldownRemaining / 1000)}s</div>`
+                        }
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        function generateStoreItems() {
+            const container = document.getElementById('storeItems');
+            if (!container) return;
+            
+            let html = '<h4>🛒 Available Items</h4>';
+            Object.keys(storeItems).forEach(itemId => {
+                const item = storeItems[itemId];
+                const canAfford = gameState.packets >= item.cost;
+                html += `
+                    <div class="upgrade-item">
+                        <h4>${item.name}</h4>
+                        <div class="cost">Cost: ${formatNumber(item.cost)} packets</div>
+                        <div class="effect">${item.effect}</div>
+                        <button class="btn ${canAfford ? '' : 'disabled'}" 
+                                onclick="buyStoreItem('${itemId}')" 
+                                ${canAfford ? '' : 'disabled'}>
+                            Purchase
+                        </button>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        function generateLeaderboard() {
+            const container = document.getElementById('leaderboardList');
+            if (!container) return;
+            
+            // Generate fake leaderboard data
+            const leaderboard = [
+                { name: 'QuantumHacker', score: formatNumber(999999999), rank: 1 },
+                { name: 'CyberGhost', score: formatNumber(500000000), rank: 2 },
+                { name: 'Anonymous404', score: formatNumber(250000000), rank: 3 },
+                { name: 'MatrixBreaker', score: formatNumber(100000000), rank: 4 },
+                { name: gameState.username, score: formatNumber(gameState.packets), rank: 5 }
+            ];
+            
+            let html = '';
+            leaderboard.forEach(player => {
+                const isPlayer = player.name === gameState.username;
+                html += `
+                    <div style="display: flex; justify-content: space-between; padding: 5px; 
+                               background: ${isPlayer ? 'rgba(0, 255, 0, 0.1)' : 'transparent'};">
+                        <span>${player.rank}. ${player.name}</span>
+                        <span>${player.score}</span>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        // Debug functions
+        function debugAddPackets(amount) {
+            gameState.packets += amount;
+            updateDisplay();
+            showNotification(`🐛 Debug: +${formatNumber(amount)} packets`);
+        }
+
+        function debugAddPrestige(amount) {
+            gameState.prestigePoints += amount;
+            updateDisplay();
+            showNotification(`🐛 Debug: +${amount} prestige points`);
+        }
+
+        function debugMaxLevel() {
+            gameState.experience = gameState.level * 1000;
+            checkLevelUp();
+            showNotification('🐛 Debug: Experience maxed');
+        }
+
+        function debugResetCooldowns() {
+            Object.keys(gameState.minigames).forEach(game => {
+                gameState.minigames[game].lastPlayed = 0;
+            });
+            Object.keys(gameState.raids.targets).forEach(target => {
+                gameState.raids.targets[target].lastRaid = 0;
+            });
+            gameState.worldControl.lastAttack = 0;
+            gameState.storeGame.lastRun = 0;
+            showNotification('🐛 Debug: All cooldowns reset');
+        }
+
+        function debugLevelUp() {
+            gameState.level++;
+            gameState.experience = 0;
+            updateDisplay();
+            showNotification('🐛 Debug: Level increased');
+        }
+
+        function debugUnlockAll() {
+            countries.forEach(country => {
+                gameState.worldControl.countries[country] = true;
+            });
+            gameState.worldControl.totalControlled = countries.length;
+            
+            Object.keys(hqModules).forEach(moduleId => {
+                gameState.hq.modules[moduleId] = true;
+            });
+            
+            showNotification('🐛 Debug: Everything unlocked');
+            updateDisplay();
+            generateWorldMap();
+            generateHQModules();
+        }
+
+        function debugPetHappy() {
+            gameState.pets.happiness = 100;
+            gameState.pets.hunger = 0;
+            updateDisplay();
+            showNotification('🐛 Debug: Pet at max happiness');
+        }
+
+        function debugPetHungry() {
+            gameState.pets.hunger = 100;
+            gameState.pets.happiness = 20;
+            updateDisplay();
+            showNotification('🐛 Debug: Pet is very hungry');
+        }
+
+        // Save/Load system
+        function saveGame() {
+            try {
+                const saveData = JSON.stringify(gameState);
+                localStorage.setItem('botnetBillionaire', saveData);
+                showNotification('💾 Game saved successfully!');
+            } catch (e) {
+                showNotification('❌ Save failed!');
+            }
+        }
+
+        function loadGame() {
+            try {
+                const saveData = localStorage.getItem('botnetBillionaire');
+                if (saveData) {
+                    const loadedState = JSON.parse(saveData);
+                    gameState = { ...gameState, ...loadedState };
+                    showNotification('📁 Game loaded successfully!');
+                    updateDisplay();
+                    generateAllUpgrades();
+                    generateAllBotnetNodes();
+                    generatePrestigeShop();
+                    generateWorldMap();
+                    generateFactionMenu();
+                    generateHQModules();
+                    generateRaidTargets();
+                    generateLeaderboard();
+                } else {
+                    showNotification('❌ No save file found!');
+                }
+            } catch (e) {
+                showNotification('❌ Load failed!');
+            }
+        }
+
+        function exportSave() {
+            try {
+                const saveData = JSON.stringify(gameState);
+                const blob = new Blob([saveData], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'botnet_billionaire_save.json';
+                a.click();
+                URL.revokeObjectURL(url);
+                showNotification('📤 Save exported!');
+            } catch (e) {
+                showNotification('❌ Export failed!');
+            }
+        }
+
+        function importSave() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        try {
+                            const loadedState = JSON.parse(e.target.result);
+                            gameState = { ...gameState, ...loadedState };
+                            showNotification('📥 Save imported successfully!');
+                            updateDisplay();
+                            generateAllUpgrades();
+                            generateAllBotnetNodes();
+                            generatePrestigeShop();
+                            generateWorldMap();
+                            generateFactionMenu();
+                            generateHQModules();
+                            generateRaidTargets();
+                            generateLeaderboard();
+                        } catch (err) {
+                            showNotification('❌ Import failed!');
+                        }
+                    };
+                    reader.readAsText(file);
+                }
+            };
+            input.click();
+        }
+
+        function resetGame() {
+            if (confirm('Are you sure you want to reset all progress?')) {
+                localStorage.removeItem('botnetBillionaire');
+                location.reload();
+            }
+        }
+
+        // Main game loop with performance optimization
+        function gameLoop(currentTime) {
+            if (currentTime - lastRenderTime >= frameTime) {
+                // Update packets per second
+                const pps = calculatePacketsPerSecond();
+                gameState.packetsPerSecond = pps;
+                gameState.packets += pps / 60; // 60 FPS target
+                
+                // Update pet status every 5 seconds
+                if (Math.floor(currentTime / 5000) !== Math.floor(lastRenderTime / 5000)) {
+                    updatePetStatus();
+                }
+                
+                // Auto-save every 30 seconds
+                if (currentTime - gameState.lastSave > 30000) {
+                    saveGame();
+                    gameState.lastSave = currentTime;
+                }
+                
+                // Update display (throttled for performance)
+                if (Math.floor(currentTime / 1000) !== Math.floor(lastRenderTime / 1000)) {
+                    updateDisplay();
+                }
+                
+                lastRenderTime = currentTime;
+            }
+            
+            animationFrameId = requestAnimationFrame(gameLoop);
+        }
+
+        function startGameLoop() {
+            gameLoop(performance.now());
+        }
+
+        function stopGameLoop() {
+            if (animationFrameId) {
+                cancelAnimationFrame(animationFrameId);
+            }
+        }
+
+        // Initialize game
+        function initGame() {
+            // Load saved game
+            loadGame();
+            
+            // Initialize audio
+            initAudio();
+            
+            // Generate all menus
+            generateAllUpgrades();
+            generateAllBotnetNodes();
+            generatePrestigeShop();
+            generateWorldMap();
+            generateFactionMenu();
+            generateHQModules();
+            generateRaidTargets();
+            generateLeaderboard();
+            generateStoreItems();
+            
+            // Initialize countries
+            countries.forEach(country => {
+                if (!gameState.worldControl.countries.hasOwnProperty(country)) {
+                    gameState.worldControl.countries[country] = false;
+                }
+            });
+            
+            // Initialize raid targets
+            Object.keys(raidTargets).forEach(targetId => {
+                if (!gameState.raids.targets[targetId]) {
+                    gameState.raids.targets[targetId] = { lastRaid: 0 };
+                }
+            });
+            
+            // Start game loop
+            startGameLoop();
+            
+            // Initial display update
+            updateDisplay();
+            
+            // Show welcome message
+            setTimeout(() => {
+                showNotification('🎮 Welcome to Botnet Billionaire! Click to start hacking!');
+            }, 1000);
+            
+            console.log('Botnet Billionaire: Fully Loaded!');
+        }
+
+        // Start the game when page loads
+        window.addEventListener('load', initGame);
+        
+        // Handle page visibility for performance
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                stopGameLoop();
+            } else {
+                startGameLoop();
+            }
+        });
+
+        // Handle window focus for performance
+        window.addEventListener('focus', () => {
+            if (!animationFrameId) startGameLoop();
+        });
+
+        window.addEventListener('blur', () => {
+            // Don't stop completely, just reduce frequency
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            switch (e.code) {
+                case 'Space':
+                    e.preventDefault();
+                    hackClick();
+                    break;
+                case 'KeyS':
+                    if (e.ctrlKey) {
+                        e.preventDefault();
+                        saveGame();
+                    }
+                    break;
+                case 'Escape':
+                    closeAllMenus();
+                    break;
+            }
+        });
+    </script>
+</body>
+</html>

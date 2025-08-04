@@ -1,0 +1,21 @@
+Build a complete, single-file HTML5 clicker game called "Botnet Billionaire" using Phaser 3 for rendering and game logic. The game should run smoothly on both desktop PCs and mobile devices, featuring a responsive layout and touch-friendly controls.
+
+Theme: A hacker terminal style with green monospace fonts on a black background.
+
+Gameplay:
+- The player earns "Packets" by clicking a large, central "HACK" button.
+- The player can buy botnet nodes to generate Packets automatically. Nodes include Raspberry Pi Miners, Infected Smartphones, Compromised PCs, Office Servers, IoT Smart Fridges, Corporate Mainframes, Satellite Hijacks, and AI Hyperclusters. Each node has a base cost and generates a specific amount of Packets per second.
+- Include over 100 upgrades divided into three categories:
+  - Click Upgrades (~30) that improve packets per click, auto-click speed, critical click chance, and click multipliers.
+  - Node Upgrades (~50) for each botnet node type (3 to 7 upgrades each) that increase production, reduce costs, and unlock synergies.
+  - Global Upgrades (~20) that affect all production, prestige gains, upgrade costs, and unlock special mechanics.
+- Upgrade costs should scale exponentially or multiplicatively to support deep long-term progression, and upgrades can be multi-purchase or one-time unlocks as appropriate.
+- Include a prestige system called "System Reboot" that resets progress in exchange for "Encryption Keys" which provide permanent multipliers.
+- Implement achievements that unlock upon reaching milestones such as first click, owning 100 nodes, and earning 1 million Packets.
+- The UI must display current Packets, Packets per second, Malware Scripts (currency for global upgrades), Encryption Keys, and player stats.
+- The game must auto-save all progress to localStorage and load it on startup.
+- Use keyboard shortcuts: "C" to click the hack button and "P" to prestige when available.
+- Provide clear, modular, and well-commented code with consistent variable and function naming conventions.
+- The entire game (HTML, CSS, and JavaScript) should be contained in one file with no external dependencies except loading Phaser 3 via CDN.
+
+Deliver the full, ready-to-run HTML file that meets all these requirements.
